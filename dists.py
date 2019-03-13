@@ -4,48 +4,57 @@ Created on Fri Feb  1 10:13:14 2019
 
 @author: fxfxrxfx
 """
+import scipy.stats as scipy
 import math
 
 def distBinomial(n, p, x):
-    return (math.factorial(n) / (math.factorial(x) * math.factorial(n - x))) * math.pow(p, x) * math.pow(1 - p, n - x)
-    
-def distHiperG(N, r, n, x):
-    return nCr(r, x) * nCr(N - r, n - x) / nCr(N, n)
+    return scipy.binom.pmf(x, n, p)
 
+def distBinomialAcum(n, p, x):
+    return scipy.binom.cdf(x, n, p)
+
+#M = Tamaño de la muestra grande
+#N = Tamaño de la muestra pequeña
+#n = Tamaño de la parte de la muestra pequeña que coge
+#x = Probabilidad buscada
+def distHiperG(M, N, n, x):
+    return scipy.hypergeom.pmf(x, M, n, N)
+
+#M = Tamaño de la muestra grande
+#N = Tamaño de la muestra pequeña
+#n = Tamaño de la parte de la muestra pequeña que coge
+#x = Probabilidad buscada
+def distHiperGAcum(N, r, n, x):
+    return scipy.hypergeom.cdf(x, M, n, N)
+
+#u => Prop
+#x => Expected
 def distPoisson(u, x):
-    return math.pow(u, x) * math.pow(math.e, -u) / math.factorial(x)
+    return scipy.poisson.pmf(x, u)
 
-def nCr(n,r):
-    f = math.factorial
-    return f(n) / f(r) / f(n-r)
+#u => Prop
+#x => Expected
+def distPoissonAcum(u, x):
+    return scipy.poisson.cdf(x, u)
 
-def distExp(u, t):
-    return 1 - math.pow(math.e, -u * t)
 
-def distUniforme():
-    return 0
+#u => Prop
+#x => Expected
+def distExp(u, x):
+    return (1 -  math.e ** (-u * x))
+
+
+
+def distUniforme(m1, m2, x1, x2):
+    return (x2 - x1) / (m2 - m1)
 
 
 def distNormal(X, u, S):    
-    #u poblationa
-    #S standar err
-    def normalDesviation(X, u, S):
-        return (X - u) / S
-    var = float(S)**2
-    denom = (2*math.pi*var)**.5
-    num = math.exp(-(float(X)-float(u))**2/(2*var))
-    return num/denom
-    
-    
-#print(distBinomial(20, 0.5, 5))
-#print(distHiperG(N = 10, r = 4, x = 2, n = 3))
-#print(distPoisson(u = 10, x = 5))
-#print(distExp(u = 1.5, t = 2))
-print(distNormal(150, 150, 15) - distNormal(125, 150, 15))
+    return scipy.norm.cdf(X, u, S)
 
 
+print(distNormal(250 * 31, 30 * 250, 250*12) - distNormal(250 * 30, 30 * 250, 250*12))
+print(distNormal(32, 30, (12)/(250**0.5)) - distNormal(30, 30, (12)/(250**0.5)))
+print(distNormal(31, 30, (12**2)/(250**0.5)) - distNormal(29, 30, (12**2)/(250**0.5)))
+print(distNormal(32, 30, 12/(250**0.5)) - distNormal(29, 30, 12/(250**0.5)))
 
-def oa(saludo = "HELLO"):
-    return saludo
-
-print(oa())
