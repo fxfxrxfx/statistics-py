@@ -72,3 +72,9 @@ def valort(p, grados):
 #Ej4: 0.4 => 0.6554217416103242
 def probabilidadZ(valor):
     return scipy.norm.cdf(valor)
+
+
+def xi2(values, expected):
+    return scipy.chisquare(values, expected)
+
+
